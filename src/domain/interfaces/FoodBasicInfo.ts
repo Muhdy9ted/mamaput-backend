@@ -1,4 +1,5 @@
-import { FoodCategory } from "../enums/FoodCategory";
+/* eslint-disable no-unused-vars */
+import { FoodCategory } from '../enums/FoodCategory';
 
 export interface FoodBasicInfo {
   readonly id: string;

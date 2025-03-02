@@ -4,6 +4,7 @@ import express from 'express';
 
 
 const app = express();
+// eslint-disable-next-line no-undef
 const PORT = Number(process.env.PORT) || 3000;
 
 

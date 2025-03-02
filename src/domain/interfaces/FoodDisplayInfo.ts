@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export interface FoodDisplayInfo {
     readonly name: string;
     readonly description: string;
