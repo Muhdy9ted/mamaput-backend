@@ -1,0 +1,79 @@
+pipeline{
+    agent { label "docker" }
+
+    tools { nodejs "Node22.14" }
+
+    stages{
+        stage('Check Commit') {
+            steps {
+                echo "========checking if commit should be built========"
+                checkIfCommitShouldBeBuilt()
+            }
+        }
+        stage("Fetch code"){
+            steps{
+                echo "========fetching code========"
+                git branch: 'main', url: 'https://github.com/Muhdy9ted/mamaput-backend.git'
+            }
+        }
+
+        stage("Execute Unit Tests"){
+            steps{
+                echo "========executing unit tests========"
+            }
+        }
+
+        
+    }
+    post{
+        always{
+            echo "========always========"
+        }
+        success{
+            echo "========pipeline executed successfully ========"
+        }
+        failure{
+            echo "========pipeline execution failed========"
+        }
+    }
+}
+
+def checkIfCommitShouldBeBuilt() {
+    if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME.startsWith('hotfix/')  || env.BRANCH_NAME.startsWith('experimental/') ) {
+        return
+    }
+    commitHasPr = hasCommitAPR(env.GIT_COMMIT)
+    if (!commitHasPr) {
+        currentBuild.result = "ABORTED"
+        error("Aborting build for a commit which is not on master hotfix/* experimental/* or on a branch with gitlab Merge Request")
+    }
+}
+
+def hasCommitAPR(final String commitHash){
+    echo "========checking if commit is made to a branch with an opened PR========"
+    commitPRBranchId = getCommitPRBranchId(commitHash)
+
+    echo "========commit PR Branch ID: ${commitPRBranchId}========"
+
+    return commitPRBranchId
+}
+
+def getCommitPRBranchId(final String commitHash) {
+    projectRepo = "https://github.com/Muhdy9ted/mamaput-backend.git"
+
+    jsonResponse = callGitHubEndpoint(projectRepo, 'GET')
+
+    return jsonResponse[0]?.iid
+}
+
+String callGitHubEndpoint(final String location, final String httpVerb) {
+    withCredentials([string(credentialsId: 'jenkins-mamaput-github-api', variable: 'githubApiBearerToken')]) {
+
+        authHeader = 'Authorization: Bearer $githubApiBearerToken'
+        command = "curl -X $httpVerb --location \"$location\" -H \"" + authHeader + '"'
+        jsonResponse = sh(script: command, returnStdout: true)
+
+        def r = readJSON text: "$jsonResponse"
+        return r
+    }
+}

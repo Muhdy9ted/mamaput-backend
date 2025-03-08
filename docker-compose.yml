@@ -3,7 +3,7 @@ services:
   app-dev:
     build:
       context: .
-      dockerfile: DockerFile-dev
+      dockerfile: Dockerfile-dev
     ports:
       - "3001:3001"
     environment:
@@ -16,7 +16,7 @@ services:
   app-prod:
     build:
       context: .
-      dockerfile: DockerFile-prod
+      dockerfile: Dockerfile-prod
     ports:
       - "3000:3000"
     environment:
