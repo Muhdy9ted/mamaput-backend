@@ -1,7 +1,7 @@
 pipeline{
     agent { label "docker" }
 
-    tools { nodejs "Node22.14" }
+    tools { nodejs "Node22" }
 
     stages{
         stage('Check Commit') {
