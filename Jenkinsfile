@@ -4,6 +4,12 @@ pipeline{
     tools { nodejs "Node22" }
 
     stages{
+        stage('Test Docker Connection') {
+            steps {
+                sh 'docker info'
+            }
+        }
+
         stage('Check Commit') {
             steps {
                 echo "========checking if commit should be built========"
