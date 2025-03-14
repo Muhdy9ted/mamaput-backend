@@ -7,7 +7,7 @@ pipeline{
         stage('Check Commit') {
             steps {
                 echo "========checking if commit should be built========"
-                checkIfCommitShouldBeBuilt()
+                // checkIfCommitShouldBeBuilt()
             }
         }
         stage("Fetch code"){
