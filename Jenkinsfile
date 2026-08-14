@@ -4,6 +4,12 @@ pipeline{
     tools { nodejs "Node22" }
 
     stages{
+        stage('Test Docker Connection') {
+            steps {
+                sh 'docker info'
+            }
+        }
+
         stage('Check Commit') {
             steps {
                 echo "========checking if commit should be built========"
@@ -13,7 +19,7 @@ pipeline{
         stage("Fetch code"){
             steps{
                 echo "========fetching code========"
-                git branch: 'main', url: 'https://github.com/Muhdy9ted/mamaput-backend.git'
+                // git branch: 'main', url: 'https://github.com/Muhdy9ted/mamaput-backend.git'
             }
         }
 

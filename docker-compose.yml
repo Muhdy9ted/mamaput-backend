@@ -8,17 +8,33 @@ services:
       - "3001:3001"
     environment:
       NODE_ENV: development
+      MONGODB_URI: "mongodb://mongoDB:27017/mamaputDB"
     volumes:
       - .:/app
       - /app/node_modules
     restart: unless-stopped
+    depends_on:
+      - mongoDB
+    networks:
+      - app-network
 
-  app-prod:
-    build:
-      context: .
-      dockerfile: Dockerfile-prod
+  mongoDB:
+    image: mongo:5.0
+    container_name: mamaputDB
     ports:
-      - "3000:3000"
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
     environment:
-      NODE_ENV: production
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
     restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
